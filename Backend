@@ -28,8 +28,10 @@ mongoose.set('useUnifiedTopology', true);
 
 mongoose.connect( 'mongodb://localhost:27017/some', err => {
 
-    if( err ) console.log( err );
-    else console.log("DataBase Connected..");
+    if( err ) 
+        console.log( err );
+    else 
+        console.log("DataBase Connected..");
 });
 
 
@@ -63,12 +65,14 @@ app.get( '/connect', ( req, res ) => {
 
     Model.findOne({}).sort({_id:-1}).limit(1).exec( ( err , docs ) => {
         
-        if(err) console.log(err);
-        if( docs == null || docs.ID === undefined ) 
-            res.json({ ID : 1});
-        else {
-
-            res.json({ ID : (docs.ID + 1) });
+        if(err) 
+            console.log(err);
+        else{
+            
+            if( docs == null || docs.ID === undefined ) 
+                res.json({ ID : 1});
+            else 
+                res.json({ ID : (docs.ID + 1) });
         }
     });
 });
@@ -79,7 +83,10 @@ app.post('/data', ( req, res ) => {
 
     Model.findOne( { ID : req.body.Id }, ( err, docs ) => {
 
-        res.json( docs );
+        if(!err)
+            res.json( docs );
+        else 
+            res.json( err );
     });
 });
 
@@ -112,12 +119,15 @@ app.post( '/insert', ( req, res ) => {
         let thePath = `G:\\Projects\\PersonalDiary\\tempUploads\\${req.files.image.name}`;
         req.files.image.mv( thePath );
 
-        fs.readFile( thePath, (err,data) => {
+        fs.readFile( thePath, ( err, data ) => {
                 
-            insertVar.img = data;
+            if(!err)
+                insertVar.img = data;
+            
             insertVar.save( err => {
 
-                if( err ) res.json( err );
+                if( err ) 
+                    res.json( err );
                 else{
                     res.json({ ID : req.body.ID, Name: req.body.Name });
                     console.log( `New Record Created.`);
@@ -125,8 +135,8 @@ app.post( '/insert', ( req, res ) => {
             });
         });
     }
-
-    else insertVar.save();
+    else 
+        insertVar.save();
 });
 
 //Delete
@@ -142,6 +152,8 @@ app.post( '/delete', ( req, res ) => {
             console.log( docs );
             res.json( req.body.Id );
         }
+        else
+            res.json( err );
     });
 });
 
@@ -215,7 +227,10 @@ app.post( '/findByName', ( req, res ) => {
 
     Model.find({ Name : { $regex: req.body.keyWord, $options : 'i' } }, { Name : 1, _id : 0 },( err, docs) =>{
         
-        res.json( docs );
+        if(!err)
+            res.json( docs );
+        else 
+            res.json( err );
     });
 });
 
@@ -223,6 +238,9 @@ app.post('/getDataByName' , ( req, res ) => {
 
     Model.findOne( { Name : req.body.Name }, ( err, docs ) => {
 
-        res.json( docs );
+        if(!err)
+            res.json( docs );
+        else
+            res.json( err );
     });
 });
